@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../data/models/product_model.dart'; // Add this import
-import '../../providers/basket_provider.dart';      // Keep existing imports
+import '../../../data/models/product_model.dart';
+import '../../providers/basket_provider.dart';
 
 class ProductDetailsScreen extends ConsumerStatefulWidget {
   final Product product;
@@ -15,16 +15,20 @@ class ProductDetailsScreen extends ConsumerStatefulWidget {
 class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   int quantity = 1;
 
-  void _incrementQuantity() => setState(() => quantity++);
-  
+  void _incrementQuantity() {
+    setState(() => quantity++);
+  }
+
   void _decrementQuantity() {
-    if (quantity > 1) setState(() => quantity--);
+    if (quantity > 1) {
+      setState(() => quantity--);
+    }
   }
 
   void _addToBasket() {
     ref.read(basketProvider.notifier).addToBasket(widget.product, quantity);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Added ${widget.product.name} to basket')),
+      SnackBar(content: Text('Added ${quantity}x ${widget.product.name} to cart')),
     );
   }
 
@@ -32,59 +36,50 @@ class _ProductDetailsScreenState extends ConsumerState<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.product.name)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Product image
             Center(
               child: Image.network(
                 widget.product.imageUrl,
                 height: 200,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, size: 200),
+                errorBuilder: (_, __, ___) => const Icon(Icons.fastfood, size: 100),
               ),
             ),
             const SizedBox(height: 20),
-            
-            // Product name
             Text(widget.product.name, style: Theme.of(context).textTheme.headlineSmall),
-            const SizedBox(height: 10),
-            
-            // Description
+            const SizedBox(height: 8),
             Text(widget.product.description),
-            const SizedBox(height: 20),
-            
-            // Price
+            const SizedBox(height: 16),
             Text('\$${widget.product.price.toStringAsFixed(2)}',
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
-            
-            // Quantity selector
             Row(
               children: [
                 const Text('Quantity:'),
-                const SizedBox(width: 10),
+                const SizedBox(width: 16),
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: _decrementQuantity,
                 ),
-                Text('$quantity', style: const TextStyle(fontSize: 16)),
+                Text('$quantity', style: const TextStyle(fontSize: 18)),
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: _incrementQuantity,
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            
-            // Add to basket button
+            const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _addToBasket,
-                child: const Text('Add to Basket'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text('Add to Cart'),
               ),
             ),
           ],

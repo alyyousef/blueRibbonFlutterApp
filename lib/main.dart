@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'presentation/screens/auth/login_screen.dart';
-import 'presentation/screens/restaurants/restaurants_screen.dart';
-
+import 'routes/app_router.dart';
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -17,11 +17,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.deepPurple,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const LoginScreen(),
-        '/restaurants': (context) => const RestaurantsScreen(),
-      },
+      onGenerateRoute: AppRouter.generateRoute,
+      initialRoute: AppRouter.login,
     );
   }
 }
